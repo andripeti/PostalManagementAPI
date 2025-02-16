@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PostalManagementAPI", "PostalManagementAPI.csproj", "{BB10529E-4260-42C5-84F4-2A9A2EE4F96D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB10529E-4260-42C5-84F4-2A9A2EE4F96D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB10529E-4260-42C5-84F4-2A9A2EE4F96D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB10529E-4260-42C5-84F4-2A9A2EE4F96D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB10529E-4260-42C5-84F4-2A9A2EE4F96D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B0012E4-D0DC-44AF-919C-EEB133E701F4}
+	EndGlobalSection
+EndGlobal
