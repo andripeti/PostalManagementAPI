@@ -9,7 +9,6 @@ public class PackageHolderService
         _context = context;
     }
 
-    // Method to get PackageHolder by IdentityId
     public async Task<PackageHolder?> GetByIdentityIdAsync(int identityId)
     {
         return await _context.PackageHolders
@@ -17,7 +16,6 @@ public class PackageHolderService
             .FirstOrDefaultAsync();
     }
 
-    // Method to get PackageHolder by OfficeId
     public async Task<PackageHolder?> GetByOfficeIdAsync(int officeId)
     {
         return await _context.PackageHolders
@@ -25,7 +23,6 @@ public class PackageHolderService
             .FirstOrDefaultAsync();
     }
 
-    // Method to create a new PackageHolder
     public async Task<PackageHolder> CreateAsync(PackageHolder packageHolder)
     {
         _context.PackageHolders.Add(packageHolder);
@@ -33,13 +30,12 @@ public class PackageHolderService
         return packageHolder;
     }
 
-    // Method to update an existing PackageHolder
     public async Task<PackageHolder?> UpdateAsync(int id, PackageHolder updatedPackageHolder)
     {
         var packageHolder = await _context.PackageHolders.FindAsync(id);
         if (packageHolder == null)
         {
-            return null; // PackageHolder not found
+            return null;
         }
 
         packageHolder.IdentityId = updatedPackageHolder.IdentityId;
@@ -51,13 +47,12 @@ public class PackageHolderService
         return packageHolder;
     }
 
-    // Method to delete a PackageHolder
     public async Task<bool> DeleteAsync(int id)
     {
         var packageHolder = await _context.PackageHolders.FindAsync(id);
         if (packageHolder == null)
         {
-            return false; // PackageHolder not found
+            return false;
         }
 
         _context.PackageHolders.Remove(packageHolder);

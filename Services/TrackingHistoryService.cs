@@ -16,7 +16,6 @@ namespace PostalManagementAPI.Services
             _context = context;
         }
 
-        // Get tracking history by delivery ID
         public async Task<List<TrackingHistory>> GetByDeliveryIdAsync(int deliveryId)
         {
             return await _context.TrackingHistories
@@ -25,7 +24,6 @@ namespace PostalManagementAPI.Services
                 .ToListAsync();
         }
 
-        // Get the latest tracking history by delivery ID
         public async Task<TrackingHistory?> GetLatestByDeliveryIdAsync(int deliveryId)
         {
             return await _context.TrackingHistories
@@ -34,7 +32,6 @@ namespace PostalManagementAPI.Services
                 .FirstOrDefaultAsync();
         }
 
-        // Create new tracking history record
         public async Task<TrackingHistory> CreateAsync(TrackingHistory trackingHistory)
         {
             _context.TrackingHistories.Add(trackingHistory);

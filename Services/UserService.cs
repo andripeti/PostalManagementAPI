@@ -43,7 +43,6 @@ namespace PostalManagementAPI.Services
                 return existingUser;
             }
 
-            // Create new user
             var newUser = new User { IdentityId = identityId };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
