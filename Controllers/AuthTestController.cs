@@ -14,9 +14,6 @@ public class AuthTestController : ControllerBase
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
         var userRoles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-        var userEmail2 = User.FindFirst("email")?.Value;  // If 'email' is a custom claim
-        var userRoles2 = User.FindAll("roles").Select(r => r.Value).ToList();
-
         return Ok(new
         {
             message = "Token is valid!",

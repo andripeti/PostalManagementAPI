@@ -32,14 +32,30 @@ namespace PostalManagementAPI.Services
             return await _context.Deliveries.FirstOrDefaultAsync(d => d.TrackingNumber == trackingNumber);
         }
 
-        public async Task<List<Delivery>> GetByHolderIdAsync(int holderId, string holderType)
+        public async Task<List<Delivery>> GetByHolderIdAndTypeAsync(int holderId, string holderType)
         {
-            IQueryable<Delivery> query = _context.Deliveries;
+            IQueryable<Delivery> query = _context.Deliveries
+                .Include(d => d.TrackingHistories) // Include tracking history for filtering
+                .AsQueryable();
 
             if (holderType == "courier")
             {
-                query = query.Where(d => d.HolderId == holderId || d.OfficeId == holderId);
+                query = query.Where(d =>
+                    d.HolderId == holderId ||
+                    ((d.OfficeId == _context.EmployeeOffices
+                        .Where(e => e.EmployeeId == _context.PackageHolders
+                            .Where(p => p.Id == holderId)
+                            .Select(p => p.IdentityId)
+                            .FirstOrDefault())
+                        .Select(e => e.OfficeId)
+                        .FirstOrDefault()) || d.OfficeId == null) &&
+                    new[] { "created", "accepted", "in_post_office" }
+                        .Contains(d.TrackingHistories.OrderByDescending(t => t.CreatedAt)
+                            .Select(t => t.Status)
+                            .FirstOrDefault())
+                );
             }
+
             else if (holderType == "office")
             {
                 query = query.Where(d => d.OfficeId == holderId);
@@ -52,10 +68,11 @@ namespace PostalManagementAPI.Services
             return await query.ToListAsync();
         }
 
+
         public async Task<List<Delivery>> GetByUserAsync(int identityId)
         {
             return await _context.Deliveries
-                .Where(d => d.SenderId == identityId || d.RecipientId == identityId)
+                .Where(d => d.SenderId == identityId)
                 .Distinct()
                 .ToListAsync();
         }

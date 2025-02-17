@@ -23,6 +23,8 @@ namespace PostalManagementAPI.Models
 
         public string Country { get; set; } = string.Empty;
 
+        public string State {  get; set; } = string.Empty;
+
         public float Longitude { get; set; }
         public float Latitude { get; set; }
         public int UserId { get; set; }

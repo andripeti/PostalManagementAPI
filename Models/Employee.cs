@@ -10,7 +10,7 @@ namespace PostalManagementAPI.Models
         public int Id { get; set; }
 
         [Required]
-        public string IdentityId { get; set; } 
+        public int UserId { get; set; } 
         public int Salary { get; set; }
     }
 }

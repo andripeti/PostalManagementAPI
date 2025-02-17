@@ -12,10 +12,10 @@ namespace PostalManagementAPI.Services
             _context = context;
         }
 
-        public async Task<Employee?> GetByIdentityIdAsync(string identityId)
+        public async Task<Employee?> GetByUserIdAsync(int identityId)
         {
             return await _context.Employees
-                .FirstOrDefaultAsync(e => e.IdentityId == identityId);
+                .FirstOrDefaultAsync(e => e.UserId == identityId);
         }
     }
 }

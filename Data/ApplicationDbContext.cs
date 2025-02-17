@@ -16,6 +16,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<TrackingHistory> TrackingHistories { get; set; }
     public DbSet<UserAddress> UserAdresses { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<EmployeeOffice> EmployeeOffices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
