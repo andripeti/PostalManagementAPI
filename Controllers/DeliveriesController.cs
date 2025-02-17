@@ -1,5 +1,4 @@
-﻿using App.Core;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostalManagementAPI.DTOs;
 using PostalManagementAPI.Models;
@@ -65,62 +64,91 @@ namespace PostalManagementAPI.Controllers
             if (delivery == null) return NotFound();
             return Ok(delivery);
         }
-
         [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Create(Delivery delivery)
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] DeliveryFormDto deliveryDto)
         {
             var identityId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = await _userService.GetUserIdByIdentityIdAsync(identityId);
-
             if (string.IsNullOrEmpty(identityId))
             {
                 return Unauthorized("Unauthorized to create this delivery.");
             }
 
-            //var recipient = await _packageHolderService.GetPackageHolderByEmail(delivery.RecipientEmail);
+            var userId = await _userService.GetUserIdByIdentityIdAsync(identityId);
 
-            //if (recipient == null)
-            //{
-            //    string password = Helpers.GenerateRandomString(8);
-
-            //    await _emailService.SendEmailAsync(delivery.RecipientEmail, "Welcome to our service",
-            //        $"Hello {delivery.RecipientFirstName},\n\nYour temporary password: {password}");
-
-            //    recipient = await _packageHolderService.GetPackageHolderByEmail(delivery.RecipientEmail);
-            //}
-
-            var recipientAddress =  await _addressService.CreateAsync(new Address
-                                   {
-                                       City = delivery.RecipientCity,
-                                       Street = delivery.RecipientStreet,
-                                       Zip = delivery.RecipientZipCode,
-                                   });
+            var recipientAddress = await _addressService.CreateAsync(new Address
+            {
+                City = deliveryDto.RecipientCity,
+                Street = deliveryDto.RecipientStreet,
+                Zip = deliveryDto.RecipientZipCode,
+            });
 
             var senderAddress = await _addressService.GetByUserIdAsync(userId);
-            var offices = await _officeService.GetAllAsync();
-
-            var chosenOffice = offices
-                .Select(office => new
+            if (senderAddress == null)
+            {
+                senderAddress = await _addressService.CreateAsync(new Address
                 {
-                    Office = office,
-                    Distance = Helpers.CalculateDistance($"{senderAddress.Street} {senderAddress.City}",
-                                                         $"{office.Address.Street} {office.Address.City}")
-                })
-                .OrderBy(o => o.Distance)
-                .First()
-                .Office;
+                    City = deliveryDto.SenderCity,
+                    Street = deliveryDto.SenderStreet,
+                    Zip = deliveryDto.SenderZipCode,
+                });
+            }
 
-            delivery.SenderId = userId;
-            delivery.OfficeId = chosenOffice.Id;
+            //var offices = await _officeService.GetAllAsync();
+            //var chosenOffice = offices
+            //    .Select(office => new
+            //    {
+            //        Office = office,
+            //        Distance = Helpers.CalculateDistance($"{senderAddress.Street} {senderAddress.City}",
+            //                                             $"{office.Address.Street} {office.Address.City}")
+            //    })
+            //    .OrderBy(o => o.Distance)
+            //    .First()
+            //    .Office;
 
+            // Create Delivery object to save in database
+            var delivery = new Delivery
+            {
+                SenderId = userId,
+                SenderName = deliveryDto.SenderName,
+                SenderPhone = deliveryDto.SenderPhone,
+                SenderEmail = deliveryDto.SenderEmail,
+                SenderStreet = deliveryDto.SenderStreet,
+                SenderCity = deliveryDto.SenderCity,
+                SenderState = deliveryDto.SenderState,
+                SenderCountry = deliveryDto.SenderCountry,
+                SenderZipCode = deliveryDto.SenderZipCode,
+
+                ReciepientName = deliveryDto.RecipientName,
+                RecipientPhone = deliveryDto.RecipientPhone,
+                RecipientEmail = deliveryDto.RecipientEmail,
+                RecipientStreet = deliveryDto.RecipientStreet,
+                RecipientCity = deliveryDto.RecipientCity,
+                RecipientState = deliveryDto.RecipientState,
+                RecipientCountry = deliveryDto.RecipientCountry,
+                RecipientZipCode = deliveryDto.RecipientZipCode,
+
+                PackageType = deliveryDto.PackageType,
+                PackageWeight = deliveryDto.PackageWeight,
+                PackageLength = deliveryDto.PackageLength,
+                PackageWidth = deliveryDto.PackageWidth,
+                PackageHeight = deliveryDto.PackageHeight,
+
+                Status = "created",
+                TrackingNumber = Helpers.GenerateTrackingNumber(),
+                Notes = deliveryDto.Notes,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Save delivery to database
             var createdDelivery = await _deliveryService.CreateAsync(delivery);
 
+            // Add tracking history
             await _trackingHistoryService.CreateAsync(new TrackingHistory
             {
                 DeliveryId = createdDelivery.Id,
-                HolderId = (int)delivery.SenderId,
-                Description = "Dërgesa u krijua",
+                HolderId = (int)createdDelivery.SenderId,
+                Description = "Delivery Created",
                 Status = "created",
                 CreatedAt = DateTime.UtcNow
             });

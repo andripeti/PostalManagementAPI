@@ -10,7 +10,7 @@ namespace PostalManagementAPI.Models
         public int Id { get; set; }
 
         // Sender Information
-        public int? SenderId { get; set; }
+        public int SenderId { get; set; }
         public string SenderName { get; set; }
         public string SenderPhone { get; set; }
         public string SenderEmail { get; set; }

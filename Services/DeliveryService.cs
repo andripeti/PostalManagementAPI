@@ -23,7 +23,6 @@ namespace PostalManagementAPI.Services
                                         ResponsiblePersonName = "Todo"
                                     }).ToListAsync();
 
-            // Return the list of deliveries by selecting the 'Delivery' part of the anonymous type
             return deliveries.Select(d => d.Delivery).ToList();
         }
 
@@ -35,7 +34,7 @@ namespace PostalManagementAPI.Services
         public async Task<List<Delivery>> GetByHolderIdAndTypeAsync(int holderId, string holderType)
         {
             IQueryable<Delivery> query = _context.Deliveries
-                .Include(d => d.TrackingHistories) // Include tracking history for filtering
+                .Include(d => d.TrackingHistories)
                 .AsQueryable();
 
             if (holderType == "courier")

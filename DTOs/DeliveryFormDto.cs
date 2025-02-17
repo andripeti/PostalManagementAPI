@@ -1,15 +1,37 @@
-﻿namespace PostalManagementAPI.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PostalManagementAPI.DTOs
 {
     public class DeliveryFormDto
     {
-        public string? RecipientFirstName { get; set; }
-        public string? RecipientLastName { get; set; }
-        public string? RecipientEmail { get; set; }
-        public string? RecipientAddressStreet { get; set; }
-        public string? RecipientAddressCity { get; set; }
-        public string? RecipientAddressZipCode { get; set; }
-        public int SenderId { get; set; }
-        public int HolderId { get; set; }
-        public int RecipientId { get; set; }
+        // Sender Information (Provided by user)
+        [Required] public string SenderName { get; set; }
+        [Required] public string SenderPhone { get; set; }
+        [Required] public string SenderEmail { get; set; }
+        public string SenderStreet { get; set; }
+        public string SenderCity { get; set; }
+        public string SenderState { get; set; }
+        public string SenderCountry { get; set; }
+        public string SenderZipCode { get; set; }
+
+        // Recipient Information
+        [Required] public string RecipientName { get; set; }
+        [Required] public string RecipientPhone { get; set; }
+        [Required] public string RecipientEmail { get; set; }
+        [Required] public string RecipientStreet { get; set; }
+        [Required] public string RecipientCity { get; set; }
+        public string RecipientState { get; set; }
+        public string RecipientCountry { get; set; }
+        [Required] public string RecipientZipCode { get; set; }
+
+        // Package Information
+        [Required] public string PackageType { get; set; }
+        [Required] public float PackageWeight { get; set; }
+        public float PackageLength { get; set; }
+        public float PackageWidth { get; set; }
+        public float PackageHeight { get; set; }
+
+        // Notes (Optional)
+        public string Notes { get; set; }
     }
 }
