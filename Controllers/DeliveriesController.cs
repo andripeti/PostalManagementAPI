@@ -166,7 +166,7 @@ namespace PostalManagementAPI.Controllers
             if (delivery == null) return NotFound();
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            var role = userId == "1" ? "employee" : userId == "2" ? "courier" : null;
 
             string newStatus = delivery.Status switch
             {
