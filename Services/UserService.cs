@@ -24,8 +24,8 @@ namespace PostalManagementAPI.Services
 
         public async Task<int> GetUserIdByIdentityIdAsync(string identityId)
         {
-            var user = await GetUserByIdentityIdAsync(identityId); // Await the asynchronous call
-            return user.Id; // Return the Id
+            var user = await GetUserByIdentityIdAsync(identityId);
+            return user.Id;
         }
 
         public async Task<User> GetUserByIdAsync(int id)
@@ -35,21 +35,22 @@ namespace PostalManagementAPI.Services
                 .FirstOrDefaultAsync();
         }
 
-        // Method to create a new user
         public async Task<User> CreateUserAsync(string identityId)
         {
-            var newUser = new User
+            var existingUser = await GetUserByIdentityIdAsync(identityId);
+            if (existingUser != null)
             {
-                IdentityId = identityId
-            };
+                return existingUser;
+            }
 
+            // Create new user
+            var newUser = new User { IdentityId = identityId };
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
-            return newUser; // Return the newly created user
+            return newUser;
         }
 
-        // Method to update a user's IdentityId (if needed)
         public async Task<User> UpdateUserIdentityIdAsync(int id, string newIdentityId)
         {
             var user = await _context.Users.FindAsync(id);
@@ -62,7 +63,6 @@ namespace PostalManagementAPI.Services
             return user;
         }
 
-        // Method to check if a user exists by their IdentityId
         public async Task<bool> UserExistsAsync(string identityId)
         {
             return await _context.Users

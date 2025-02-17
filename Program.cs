@@ -17,6 +17,7 @@ builder.Services.AddScoped<OfficeService>();
 builder.Services.AddScoped<PackageHolderService>();
 builder.Services.AddScoped<TrackingHistoryService>();
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<UserService>();
 
 // Add authentication services
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

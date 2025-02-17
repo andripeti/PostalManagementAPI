@@ -15,7 +15,6 @@ namespace PostalManagementAPI.Controllers
             _officeService = officeService;
         }
 
-        // GET: api/office/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Office>> GetById(int id)
         {
@@ -29,7 +28,6 @@ namespace PostalManagementAPI.Controllers
             return Ok(office);
         }
 
-        // POST: api/office
         [HttpPost]
         public async Task<ActionResult<Office>> Create(Office office)
         {
@@ -37,7 +35,6 @@ namespace PostalManagementAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = createdOffice.Id }, createdOffice);
         }
 
-        // PUT: api/office/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, Office office)
         {
@@ -50,7 +47,6 @@ namespace PostalManagementAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/office/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
