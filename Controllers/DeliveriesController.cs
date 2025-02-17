@@ -61,9 +61,11 @@ namespace PostalManagementAPI.Controllers
         public async Task<IActionResult> GetByTrackingNumber(string trackingNumber)
         {
             var delivery = await _deliveryService.GetByTrackingNumberAsync(trackingNumber);
+            delivery.TrackingHistories = await _trackingHistoryService.GetByDeliveryIdAsync(delivery.Id);
             if (delivery == null) return NotFound();
-            return Ok(delivery);
+            return Ok(delivery.TrackingHistories);
         }
+
         [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] DeliveryFormDto deliveryDto)
@@ -93,18 +95,6 @@ namespace PostalManagementAPI.Controllers
                     Zip = deliveryDto.SenderZipCode,
                 });
             }
-
-            //var offices = await _officeService.GetAllAsync();
-            //var chosenOffice = offices
-            //    .Select(office => new
-            //    {
-            //        Office = office,
-            //        Distance = Helpers.CalculateDistance($"{senderAddress.Street} {senderAddress.City}",
-            //                                             $"{office.Address.Street} {office.Address.City}")
-            //    })
-            //    .OrderBy(o => o.Distance)
-            //    .First()
-            //    .Office;
 
             // Create Delivery object to save in database
             var delivery = new Delivery
@@ -140,14 +130,12 @@ namespace PostalManagementAPI.Controllers
                 UpdatedAt = DateTime.UtcNow
             };
 
-            // Save delivery to database
             var createdDelivery = await _deliveryService.CreateAsync(delivery);
 
-            // Add tracking history
             await _trackingHistoryService.CreateAsync(new TrackingHistory
             {
                 DeliveryId = createdDelivery.Id,
-                HolderId = (int)createdDelivery.SenderId,
+                HolderId = createdDelivery.SenderId,
                 Description = "Delivery Created",
                 Status = "created",
                 CreatedAt = DateTime.UtcNow
@@ -156,7 +144,7 @@ namespace PostalManagementAPI.Controllers
             return CreatedAtAction(nameof(GetByTrackingNumber), new { trackingNumber = createdDelivery.TrackingNumber }, createdDelivery);
         }
 
-        [Authorize(Roles = "courier, employee")]
+        [Authorize]
         [HttpPost("{id}/accept")]
         public async Task<IActionResult> Accept(int id)
         {
