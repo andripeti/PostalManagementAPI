@@ -29,6 +29,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddDefaultPolicy(
+            builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
+    });
+
 
 // Configure Swagger to use JWT
 builder.Services.AddSwaggerGen(c =>
@@ -61,6 +71,11 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.UseSwagger();
 app.UseSwaggerUI();
