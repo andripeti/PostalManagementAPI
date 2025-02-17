@@ -3,6 +3,7 @@
 
 namespace PostalManagementAPI.Controllers
 {
+
     [Authorize]
     public class HomeController : ControllerBase
     {
